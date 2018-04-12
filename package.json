@@ -1,7 +1,7 @@
 {
-    "name": "gittodo",
-    "displayName": "gittodo",
-    "description": "Creates clickable links out of git issues",
+    "name": "githubtodo",
+    "displayName": "githubtodo",
+    "description": "Creates quick links out of github issues",
     "version": "0.0.1",
     "publisher": "alexr00",
     "engines": {
@@ -11,14 +11,14 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.findGitIssue"
+        "onCommand:extension.findGitHubIssue"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [
             {
-                "command": "extension.findGitIssue",
-                "title": "Git Todo"
+                "command": "extension.findGitHubIssue",
+                "title": "Git Hub Todo"
             }
         ]
     },
