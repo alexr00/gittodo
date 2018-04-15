@@ -30,8 +30,8 @@ export class GithubIssue {
     public readonly issueNumber: string;
 
     constructor(startPosition: vscode.Position, endPosition: vscode.Position, owner: string, repository: string, issueNumber: string) {
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
+        this.startPosition = new vscode.Position(startPosition.line + 1, startPosition.character);
+        this.endPosition = new vscode.Position(endPosition.line + 1, endPosition.character);
         this.owner = owner;
         this.repository = repository;
         this.issueNumber = issueNumber;
@@ -41,10 +41,12 @@ export class GithubIssue {
         let target = "https://github.com/" + this.owner + "/" + this.repository + "/issues/" + this.issueNumber;
         let targetUri:vscode.Uri = vscode.Uri.parse(target);
         // document line positions are 0 based, but document link based positions are 1 based
-        let adjustedStartPosition = new vscode.Position(this.startPosition.line + 1, this.startPosition.character);
-        let adjustedEndPosition = new vscode.Position(this.endPosition.line + 1, this.endPosition.character);
-        let linkRange: vscode.Range = new vscode.Range(adjustedStartPosition, adjustedEndPosition);
+        let linkRange: vscode.Range = new vscode.Range(this.startPosition, this.endPosition);
         return new vscode.DocumentLink(linkRange, targetUri);
+    }
+
+    public hover() : vscode.Hover {
+        return new vscode.Hover("temp", new vscode.Range(this.startPosition, this.endPosition));
     }
 
     public static findNextIssue(document: vscode.TextDocument, searchStartPosition: vscode.Position) : GithubIssue | null {

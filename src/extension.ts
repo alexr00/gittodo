@@ -4,6 +4,7 @@
 import * as vscode from 'vscode';
 import { GithubIssueLinkProvider } from './githubIssueLinkProvider';
 import { GithubIssue } from './githubIssue';
+import { GithubIssueHoverProvider } from './githubIssueHoverProvider';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -30,6 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
         
             vscode.languages.registerDocumentLinkProvider('*', new GithubIssueLinkProvider(issues));
+            vscode.languages.registerHoverProvider("*", new GithubIssueHoverProvider(issues));
         
         }
     });
