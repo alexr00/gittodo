@@ -27,7 +27,7 @@ export class GithubIssueHoverProvider implements vscode.HoverProvider {
      * signaled by returning `undefined` or `null`.
      */
     provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
-        var hover: vscode.Hover | null = null;
+        var hover: Promise<vscode.Hover> | null = null;
 
         this.issueMap.forEach((value: GithubIssue, key: vscode.Range, map: Map<vscode.Range, GithubIssue>) => {
             if(key.contains(position)) {

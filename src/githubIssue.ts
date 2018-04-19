@@ -2,6 +2,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+const octokit = require('@octokit/rest')({
+    debug: false
+});
 
 export class GithubIssue {
     /** 
@@ -45,8 +48,15 @@ export class GithubIssue {
         return new vscode.DocumentLink(linkRange, targetUri);
     }
 
-    public hover() : vscode.Hover {
-        return new vscode.Hover("temp", new vscode.Range(this.startPosition, this.endPosition));
+    public hover() : Promise<vscode.Hover> | null {
+        return octokit.issues.get({
+            owner: this.owner,
+            repo: this.repository,
+            number: +this.issueNumber
+        }).then((data: any) => {
+            let description = data.data.body;
+            return new vscode.Hover(description, new vscode.Range(this.startPosition, this.endPosition)); 
+        });
     }
 
     public static findNextIssue(document: vscode.TextDocument, searchStartPosition: vscode.Position) : GithubIssue | null {
