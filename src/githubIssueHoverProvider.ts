@@ -6,6 +6,9 @@ import { GithubIssue } from './githubIssue';
 
 export class GithubIssueHoverProvider implements vscode.HoverProvider {
 
+    /**
+     * Maps the ranges of the TODO comment with the corresponding github issue.
+     */
     private issueMap: Map<vscode.Range, GithubIssue>;
 
     constructor(issues: GithubIssue[]) {
@@ -16,9 +19,12 @@ export class GithubIssueHoverProvider implements vscode.HoverProvider {
     }
 
     /**
-     * Provide a hover for the given position and document. Multiple hovers at the same
-     * position will be merged by the editor. A hover can have a range which defaults
-     * to the word range at the position when omitted.
+     * Provides hovers for github issue tile and body for the given document. For comments structured as:
+     * 
+     * // TODO: github <repository> <issue number> <optional descrptions>
+     * // TODO: github alexr00/gittodo 1 this is an issue
+     * 
+     * A hover will be created with the title and body of the github issue.
      *
      * @param document The document in which the command was invoked.
      * @param position The position at which the command was invoked.

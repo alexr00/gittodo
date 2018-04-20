@@ -34,7 +34,7 @@
         "@types/node": "^7.0.43",
         "tslint": "^5.8.0",
         "typescript": "^2.6.1",
-        "vscode": "^1.1.6"
+        "vscode": "^1.1.14"
     },
     "dependencies": {
         "@octokit/rest": "^15.2.6"

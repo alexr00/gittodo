@@ -54,7 +54,7 @@ export class GithubIssue {
             repo: this.repository,
             number: +this.issueNumber
         }).then((data: any) => {
-            let description = data.data.body;
+            let description = data.data.title + ": " + data.data.body;
             return new vscode.Hover(description, new vscode.Range(this.startPosition, this.endPosition)); 
         });
     }
