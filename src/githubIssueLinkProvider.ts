@@ -25,10 +25,18 @@ export class GithubIssueLinkProvider implements vscode.DocumentLinkProvider {
      * @return An array of [document links](#DocumentLink) or a thenable that resolves to such. The lack of a result
      * can be signaled by returning `undefined`, `null`, or an empty array.
      */
-    provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult <vscode.DocumentLink[]> {
-        let links:vscode.DocumentLink[] = [];
-        for(var issueCount = 0; issueCount < this.issues.length; issueCount++) {
-            links.push(this.issues[issueCount].link());
+    provideDocumentLinks(document: vscode.TextDocument, token: vscode.CancellationToken): vscode.ProviderResult<vscode.DocumentLink[]> {
+        let links: vscode.DocumentLink[] = [];
+        let hasRefreshed: boolean = false;
+        for (var issueCount = 0; issueCount < this.issues.length; issueCount++) {
+            let link = this.issues[issueCount].link(document);
+            if (!link && !hasRefreshed) {
+                this.issues = GithubIssue.findAllIssues(document);
+                hasRefreshed = true;
+                issueCount--;
+            } else if (link) {
+                links.push(link);
+            }
         }
         return links;
     }

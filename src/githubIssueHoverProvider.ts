@@ -9,13 +9,8 @@ export class GithubIssueHoverProvider implements vscode.HoverProvider {
     /**
      * Maps the ranges of the TODO comment with the corresponding github issue.
      */
-    private issueMap: Map<vscode.Range, GithubIssue>;
 
-    constructor(issues: GithubIssue[]) {
-        this.issueMap = new Map<vscode.Range, GithubIssue>();
-        for(var issueCount = 0; issueCount < issues.length; issueCount++) {
-            this.issueMap.set(new vscode.Range(issues[issueCount].startPosition, issues[issueCount].endPosition), issues[issueCount]);
-        }
+    constructor() {
     }
 
     /**
@@ -23,6 +18,9 @@ export class GithubIssueHoverProvider implements vscode.HoverProvider {
      * 
      * // TODO: github <repository> <issue number> <optional descrptions>
      * // TODO: github alexr00/gittodo 1 this is an issue
+     * 
+     * And for comments that just contain a link
+     * // https://github.com/alexr00/gittodo/issues/1
      * 
      * A hover will be created with the title and body of the github issue.
      *
@@ -35,12 +33,10 @@ export class GithubIssueHoverProvider implements vscode.HoverProvider {
     provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Hover> {
         var hover: Promise<vscode.Hover> | null = null;
 
-        this.issueMap.forEach((value: GithubIssue, key: vscode.Range, map: Map<vscode.Range, GithubIssue>) => {
-            if(key.contains(position)) {
-                hover = value.hover();
-            }
-        });
-
+        let issue = GithubIssue.lineToIssue(document.lineAt(position).text, position.line);
+        if (issue) {
+            hover = issue.hover();
+        }
         return hover;
     }
 }

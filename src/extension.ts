@@ -14,26 +14,19 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     console.log('GitHub todo is active');
 
+    let textEditor = vscode.window.activeTextEditor;
+    if (textEditor !== undefined) {
+        let issues: GithubIssue[] = GithubIssue.findAllIssues(textEditor.document);
+    
+        vscode.languages.registerDocumentLinkProvider('*', new GithubIssueLinkProvider(issues));
+        vscode.languages.registerHoverProvider("*", new GithubIssueHoverProvider());
+    }
+
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
     let disposable = vscode.commands.registerCommand('extension.findGitHubIssue', () => {
-        let textEditor = vscode.window.activeTextEditor;
-        if (textEditor !== undefined) {
-            let issues: GithubIssue[] = [];
-            let document = textEditor.document;
-            let position = new vscode.Position(0, 0);
-            let issue = GithubIssue.findNextIssue(document, position);
-            while (issue !== null) {
-                issues.push(issue);
-                position = issue.endPosition;
-                issue = GithubIssue.findNextIssue(document, position);
-            }
         
-            vscode.languages.registerDocumentLinkProvider('*', new GithubIssueLinkProvider(issues));
-            vscode.languages.registerHoverProvider("*", new GithubIssueHoverProvider(issues));
-        
-        }
     });
 
     context.subscriptions.push(disposable);
